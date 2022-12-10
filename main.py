@@ -27,7 +27,7 @@ def finaliprede (_IP_): #Retorna o final do IP[String] / Retorna a rede do IP[St
             elif int(_IP_[d:a]) >= 0 and int(_IP_[d:a]) <=255 and (b == 2 or b == 3):
                 d=a+1
             else:   
-                sys.exit('Foi inserido algum parâmetro incorreto!')
+                sys.exit()
                             #tratamento FIM
         elif b < 3:
             redeip[a] = _IP_[a]
@@ -43,13 +43,17 @@ def finaliprede (_IP_): #Retorna o final do IP[String] / Retorna a rede do IP[St
             finalip[-2] = finalip[0]
             finalip[-3] = '0'
     else:
-        sys.exit('Foi inserido algum parâmetro incorreto!')
+        sys.exit()
                         #Fim Correção
                         #Inicia o processo de remoção do "." da mascara   
-    a = len(redeip)-1                                    #Contabiliza a quantidade de caractere da rede
-    redeip = list(redeip)                               #converte para tipo lista
-    redeip = redeip[0:a-1]                              #remove o ultimo "."
-    return [''.join(finalip), ''.join(redeip)]
+    z = []
+    for x in redeip: 
+        if x.strip(): 
+            z.append(x) 
+    z = list(z)                               #converte para tipo lista
+    a = len(z)
+    z = z[0:a-1]                              #remove o ultimo "."
+    return [''.join(finalip), ''.join(z)]
 def tipodevice (_devicename_):
     a,b,c = 0,0,0
     tipo = ["","","","","","","","","","","",""]
@@ -68,11 +72,14 @@ def tipodevice (_devicename_):
         b += 1
     return tipo
 def tagloopback (_rede_):
-    a,b = len(Loopback_tag),0
-    while b <= a-1:
+    a,b,c = len(Loopback_tag)-1,0,0
+    while b <= a:
         if _rede_ == Loopback_tag[b]:
+            c=1
             break
         b += 1
+    if c==0:
+        sys.exit()
     return loopback_tag_id[b]
 
 DeviceTypeTag = imp_list("devicetype.txt")
@@ -85,17 +92,20 @@ Loopback_tag = imp_list("loopbacks.txt")
 #IP_B = input ("Insira o IP do lado B: ")
 #Hostname_B = input ("Insira o Hostname do lado B: ")
 
-IP_A = "100.255.255.11"
+IP_A = "100.65.254.14"
 Hostname_A = "BR-PA-SRM-SEP-PE-01"
-IP_B = "100.65.255.400"
+IP_B = "100.65.255.100"
 Hostname_B = "BR-PA-SRM-SAM-PE-01"
 
 T_p2p = "0000:0000:"                        #Por enquanto tipo backbone apenas
-fimipa,redeIpA = finaliprede(IP_A)
-fimipb,redeIpB = finaliprede(IP_B)
-TipoDeviceA = tipodevice(Hostname_A)
-TipoDeviceB = tipodevice(Hostname_B)
-tagLoopIpA = tagloopback(redeIpA)
-tagLoopIpB = tagloopback(redeIpB)
-#Imprimindo o prefixo final (Ex: FD00:0:0:2111:2117:0:0:0/126)
-print("\nPrefixo Gerado é:\n""fd00:" + T_p2p+ TipoDeviceA + fimipa + ":" + TipoDeviceB + fimipb + ":" + tagLoopIpA + ":" + tagLoopIpB + ":" + "0000/126" + "\n")
+try:
+    fimipa,redeIpA = finaliprede(IP_A)
+    fimipb,redeIpB = finaliprede(IP_B)
+    TipoDeviceA = tipodevice(Hostname_A)
+    TipoDeviceB = tipodevice(Hostname_B)
+    tagLoopIpA = tagloopback(redeIpA)
+    tagLoopIpB = tagloopback(redeIpB)
+    #Imprimindo o prefixo final (Ex: FD00:0:0:2111:2117:0:0:0/126)
+    print("\nPrefixo Gerado é:\n""fd00:" + T_p2p+ TipoDeviceA + fimipa + ":" + TipoDeviceB + fimipb + ":" + tagLoopIpA + ":" + tagLoopIpB + ":" + "0000/126" + "\n")
+except:
+    print("Avalie os parâmetros inseridos e tente novamente!")
