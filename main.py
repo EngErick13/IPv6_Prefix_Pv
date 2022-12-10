@@ -1,3 +1,4 @@
+import sys
 def imp_list (_nomefile_):#Função de coleta dos dados de arquivos e salvar em variávell lista
     a = open(_nomefile_, 'r')
     b = a.readlines()
@@ -9,29 +10,40 @@ def imp_list (_nomefile_):#Função de coleta dos dados de arquivos e salvar em 
         c=c+1
     return d
 def finaliprede (_IP_): #Retorna o final do IP[String] / Retorna a rede do IP[String]
-    a,b,c = 0,0,0
+    a,b,c,d = 0,0,0,0
     finalip = ["","",""]
     redeip = ["","","","","","","","","","","",""]
     while a <= len(_IP_)-1: 
     #Leituras após a rede sido avaliada
-        if b >= 3 and _IP_[a] != ".":
+        if b == 3 and _IP_[a] != ".":
             finalip[c] = _IP_[a]
             c += 1 
         elif _IP_[a] == ".":
             b += 1
             redeip[a] = _IP_[a]
+                            #tratamento de erro 1º[1-255], 2º[0-255], 3º[0-255]
+            if int(_IP_[d:a]) >= 1 and int(_IP_[d:a]) <=255 and b == 1:
+                d=a+1
+            elif int(_IP_[d:a]) >= 0 and int(_IP_[d:a]) <=255 and (b == 2 or b == 3):
+                d=a+1
+            else:   
+                sys.exit('Foi inserido algum parâmetro incorreto!')
+                            #tratamento FIM
         elif b < 3:
             redeip[a] = _IP_[a]
         a+=1
                         #Inicia a correção de erros do final do IP na geração do IPv6
-    if len(''.join(finalip)) == 1: 
-        finalip[-1] = finalip[0]
-        finalip[-2] = '0'
-        finalip[-3] = '0'
-    elif len(''.join(finalip)) == 2:
-        finalip[-1] = finalip[1]
-        finalip[-2] = finalip[0]
-        finalip[-3] = '0'
+    if int(''.join(finalip)) >= 0 and int(''.join(finalip)) <=255:
+        if len(''.join(finalip)) == 1: 
+            finalip[-1] = finalip[0]
+            finalip[-2] = '0'
+            finalip[-3] = '0'
+        elif len(''.join(finalip)) == 2:
+            finalip[-1] = finalip[1]
+            finalip[-2] = finalip[0]
+            finalip[-3] = '0'
+    else:
+        sys.exit('Foi inserido algum parâmetro incorreto!')
                         #Fim Correção
                         #Inicia o processo de remoção do "." da mascara   
     a = len(redeip)-1                                    #Contabiliza a quantidade de caractere da rede
@@ -73,9 +85,9 @@ Loopback_tag = imp_list("loopbacks.txt")
 #IP_B = input ("Insira o IP do lado B: ")
 #Hostname_B = input ("Insira o Hostname do lado B: ")
 
-IP_A = "100.65.255.11"
+IP_A = "100.255.255.11"
 Hostname_A = "BR-PA-SRM-SEP-PE-01"
-IP_B = "100.65.255.5"
+IP_B = "100.65.255.400"
 Hostname_B = "BR-PA-SRM-SAM-PE-01"
 
 T_p2p = "0000:0000:"                        #Por enquanto tipo backbone apenas
