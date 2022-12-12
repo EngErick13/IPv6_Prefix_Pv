@@ -1,14 +1,14 @@
 import sys
 def imp_list (_nomefile_):#Função de coleta dos dados de arquivos e salvar em variávell lista
-    a = open(_nomefile_, 'r')
-    b = a.readlines()
-    a.close()
-    c=0
-    d=[]
-    while c<=len(b)-1:
-        d.insert(c,b[c].replace("\n", ""))
-        c=c+1
-    return d
+    arquivo_externo = open(_nomefile_, 'r')
+    lista_arquivo = arquivo_externo.readlines()
+    arquivo_externo.close()
+    contador=0
+    resultado_lista=[]
+    while contador<=len(lista_arquivo)-1:
+        resultado_lista.insert(contador,lista_arquivo[contador].replace("\n", ""))
+        contador=contador+1
+    return resultado_lista
 def finaliprede (_IP_): #Retorna o final do IP[String] / Retorna a rede do IP[String]
     a,b,c,d = 0,0,0,0
     finalip = ["","",""]
@@ -65,21 +65,22 @@ def tipodevice (_devicename_):
             a += 1
         c+=1
     a,b,tipo = len(DeviceTypeTag),0,''.join(tipo)
-    while b <= a-1:
+    while b <= a:
         if tipo == DeviceTypeTag[b]:
             tipo = DeviceTypeTagID[b]
             break
+        elif b == a:
+            sys.exit()
         b += 1
     return tipo
 def tagloopback (_rede_):
-    a,b,c = len(Loopback_tag)-1,0,0
+    a,b = len(Loopback_tag)-1,0
     while b <= a:
         if _rede_ == Loopback_tag[b]:
-            c=1
             break
+        elif b == a:
+            sys.exit()
         b += 1
-    if c==0:
-        sys.exit()
     return loopback_tag_id[b]
 
 DeviceTypeTag = imp_list("devicetype.txt")
@@ -92,7 +93,7 @@ Loopback_tag = imp_list("loopbacks.txt")
 #IP_B = input ("Insira o IP do lado B: ")
 #Hostname_B = input ("Insira o Hostname do lado B: ")
 
-IP_A = "100.65.254.14"
+IP_A = "100.65.255.14"
 Hostname_A = "BR-PA-SRM-SEP-PE-01"
 IP_B = "100.65.255.100"
 Hostname_B = "BR-PA-SRM-SAM-PE-01"
